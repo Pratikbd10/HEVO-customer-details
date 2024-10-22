@@ -36,7 +36,7 @@
 
 ```
 * Configure the database to be accessible to external users too by making appropriate changes inside config files, those are "postgresql.conf" and "pg_hba.conf"
-
+====================
 ### Building and running the dbt project.
 * Run the following command at the desired folder, where you want to create the dbt project.
 ```cmd
