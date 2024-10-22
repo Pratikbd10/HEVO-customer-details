@@ -44,8 +44,31 @@
 ```
 * This will create a project and ask for the warehouse and database details.
 * After providing those things the project will be linked to the database.
-* We can directly create models.
+* We can create models.
+```sql
+{{ config(materialized='table') }}
+
+with customers as (
+
+    SELECT c.id AS customer_id, c.first_name, c.last_name, MIN(o.order_date) AS first_order, MAX(o.order_date) AS most_recent_order,COUNT(o.id) AS number_of_orders,COALESCE(SUM(p.amount), 0) AS customer_lifetime_value 
+    FROM PC_HEVODATA_DB.PUBLIC.RAW_CUSTOMERS c 
+    LEFT JOIN PC_HEVODATA_DB.PUBLIC.RAW_ORDERS o ON c.id = o.user_id 
+    LEFT JOIN PC_HEVODATA_DB.PUBLIC.RAW_PAYMENTS p ON o.id = p.order_id 
+    GROUP BY c.id, c.first_name, c.last_name 
+    ORDER BY c.id
+
+)
+
+select *
+from customers
+```
+
 * Create testcases for data quality checkups.
+```sql
+SELECT customer_id
+    FROM {{ ref('customers_materialized_table')}}
+    WHERE first_order > most_recent_order
+```
 * We can use following command to run the models.
 ```cmd
     dbt run
