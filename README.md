@@ -54,3 +54,5 @@
 ```cmd
     dbt test
 ```
+
+* If all the tests pass, then we are good to go.
